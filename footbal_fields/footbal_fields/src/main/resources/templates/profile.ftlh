@@ -23,7 +23,7 @@
                 <li><a href="/my-courts"><i>📍</i> Мои площадки</a></li>
                 <li><a href="/my-reviews"><i>✍️</i> Мои отзывы</a></li>
                 <li><a href="/settings"><i>⚙️</i> Настройки</a></li>
-                <li><a href="/logout"><i>🚪</i> Выйти</a></li>
+                <li><a href="/logoutPage"><i>🚪</i> Выйти</a></li>
             </ul>
         </div>
 
@@ -82,8 +82,10 @@
                 </div>
 
                 <!-- Форма редактирования личной информации -->
-                <form class="edit-form" id="personalForm" action="/updatePersonalInfo" method="POST">
-                     <input type="hidden" name="_csrf" th:value="${_csrf.token}"/>
+                <form id="personalForm" class="hidden" action="/updatePersonalInfo" method="post">
+                    <input type="hidden" name="_method" value="put"/>
+                    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
+
                     <div class="form-row">
                         <label for="fullname">Полное имя</label>
                         <input type="text" id="fullname" name="name" value="${player.name!''}">
@@ -103,9 +105,9 @@
                         <label for="level">Статус</label>
                         <select id="level" name="status">
                          <option value="">-- Выберите статус --</option>
-                                <option value="PLAYER" <#if player.skillLevel?? && player.skillLevel == "PLAYER">selected</#if>>Игрок</option>
-                                <option value="CAPTAIN" <#if player.skillLevel?? && player.skillLevel == "CAPTAIN">selected</#if>>Капитан</option>
-                                <option value="SPECTATOR" <#if player.skillLevel?? && player.skillLevel == "SPECTATOR">selected</#if>>Зритель</option>
+                                <option value="Игрок">Игрок</option>
+                                <option value="Капитан">Капитан</option>
+                                <option value="Зритель">Зритель</option>
                         </select>
                     </div>
                     <div class="form-actions">

@@ -96,7 +96,7 @@ public class Controller {
         model.addAttribute("fields", fieldService.getFields());
         return "myteams";
     }
-    @GetMapping("/logout")
+    @GetMapping("/logoutPage")
     public String logout(){
         return "main";
     }
@@ -125,5 +125,6 @@ public class Controller {
         teamService.createTeam(team);
         return "redirect:myteams";
     }
+
 
 }

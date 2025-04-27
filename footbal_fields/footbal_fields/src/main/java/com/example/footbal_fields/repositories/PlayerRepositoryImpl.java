@@ -3,12 +3,15 @@ package com.example.footbal_fields.repositories;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.PreparedStatementSetter;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
 import com.example.footbal_fields.models.Player;
 
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Types;
 
 @Repository
 public class PlayerRepositoryImpl implements PlayerRepository {
@@ -54,16 +57,20 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public Player updatePlayer(Player player) {
-        String query = "UPDATE players\n" +
-                "SET \n" +
-                "    name = ?,\n" +
-                "    gender = ?,\n" +
-                "    age = ?,\n" +
-                "    status = ?,\n" +
-                "    contact = ?,\n" +
-                "WHERE \n" +
-                "    id = ?;";
-        jdbcTemplate.update(query, player.getName(), player.getGender(), player.getAge(), player.getExperience(), player.getContact(), player.getId());
+        String query = "UPDATE player SET full_name = ?, gender = ?, age = ?, status = ?, contact_info = ? WHERE id = ?";
+
+        jdbcTemplate.update(query, new PreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps) throws SQLException {
+                ps.setString(1, player.getName());          // name
+                ps.setString(2, player.getGender());       // gender
+                ps.setObject(3, player.getAge(), Types.INTEGER);  // age (может быть null)
+                ps.setString(4, player.getExperience());       // status
+                ps.setString(5, player.getContact());      // contact_info
+                ps.setLong(6, player.getId());             // id
+            }
+        });
+
         return player;
     }
     @Override
