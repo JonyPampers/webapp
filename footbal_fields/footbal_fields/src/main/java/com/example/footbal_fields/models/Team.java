@@ -8,7 +8,7 @@ import java.util.List;
 @Data
 public class Team {
     private int id;
-    private List<User> players;
+    private List<Player> players;
     private int fieldId;
     private Date gameDate;
     private Time gameTime;
@@ -30,7 +30,7 @@ public class Team {
         return gameDate;
     }
 
-    public List<User> getPlayers() {
+    public List<Player> getPlayers() {
         return players;
     }
 
@@ -50,7 +50,7 @@ public class Team {
         this.fieldId = fieldId;
     }
 
-    public void setPlayers(List<User> players) {
+    public void setPlayers(List<Player> players) {
         this.players = players;
     }
 
