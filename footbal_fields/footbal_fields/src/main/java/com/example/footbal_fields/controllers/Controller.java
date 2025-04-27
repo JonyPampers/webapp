@@ -1,10 +1,8 @@
 package com.example.footbal_fields.controllers;
 
-import com.example.footbal_fields.models.Player;
 import com.example.footbal_fields.repositories.PlayerRepositoryImpl;
 import com.example.footbal_fields.servicies.PlayerService;
 import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -42,42 +40,18 @@ public class Controller {
         return "login";
     }
     @PostMapping("/loginPlayer")
-    public String login(Model model, @RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes, HttpSession session){
+    public String login(@RequestParam String username, @RequestParam String password, RedirectAttributes redirectAttributes){
         try{
-            if (playerService.login(username, password)){
-                session.setAttribute("player", playerService.getPlayer(username));
-                return "redirect:profile";
-            }else {
+            if (playerService.login(username, password))
+                return "redirect:main";
+            else {
                 redirectAttributes.addFlashAttribute("error", "Неверный пароль");
-                return "redirect:loginPage";
+                return "redirect:LoginPage";
             }
 
         }catch (PlayerRepositoryImpl.EntityNotFoundException e){
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:loginPage";
         }
-    }
-    @GetMapping("/profile")
-    public String showProfile(Model model, HttpSession session){
-        model.addAttribute("player", session.getAttribute("player"));
-        if (session.getAttribute("player")==null)
-            return "redirect:loginPage";
-        return "profile";
-    }
-    @PostMapping("/updatePersonalInfo")
-    public String updatePersonalInfo(@RequestParam String name, @RequestParam int age, @RequestParam String gender, @RequestParam String status, HttpSession session, RedirectAttributes redirectAttributes){
-        System.out.println("Session ID: " + session.getId());
-        System.out.println("Player in session: " + session.getAttribute("player"));
-        Player player = (Player) session.getAttribute("player");
-        System.out.println(player.getId());
-        player.setName(name);
-        player.setAge(age);
-        player.setGender(gender);
-        player.setExperience(status);
-        session.setAttribute("player", playerService.updatePersonalInfo(player));
-        System.out.println(player.getName());
-        System.out.println(player.getId());
-        return "redirect:/profile";
-
     }
 }

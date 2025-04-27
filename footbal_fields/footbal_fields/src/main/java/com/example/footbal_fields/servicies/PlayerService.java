@@ -37,13 +37,6 @@ public class PlayerService {
             throw e;
         }
     }
-    public Player getPlayer(String username){
-        return playerRepository.getPlayer(username);
-    }
-    public Player updatePersonalInfo(Player player){
-        return playerRepository.updatePlayer(player);
-
-    }
     public class UsernameAlreadyExistsException extends RuntimeException {
         public UsernameAlreadyExistsException(String message) {
             super(message);
