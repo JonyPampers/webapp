@@ -11,6 +11,9 @@ public class Field {
     private int y;
     private int central;
     private List<Service> services;
+    private String name;
+    public void setName(String name){this.name=name;}
+    public String getName(){return name;}
 
     public int getId() {
         return id;

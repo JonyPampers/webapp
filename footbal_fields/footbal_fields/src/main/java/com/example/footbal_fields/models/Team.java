@@ -13,6 +13,12 @@ public class Team {
     private Date gameDate;
     private Time gameTime;
     private int amount;
+    private int creator;
+    private String name;
+    public void setName(String name){this.name=name;}
+    public String getName(){return name;}
+    public void setCreator(int id){creator=id;}
+    public int getCreator(){return creator;}
 
     public int getId() {
         return id;

@@ -15,9 +15,12 @@ public class PlayerService {
     private static final BCryptPasswordEncoder encoder = new BCryptPasswordEncoder();
 
     public void createPlayer(String name, int age, String username, String password){
-        if ((playerRepository.getPlayer(username)).getUsername() !=null){
+
+        /*if ((playerRepository.getPlayer(username)).getUsername() !=null){
             throw new UsernameAlreadyExistsException("Пользователь с таким логином уже существует");
         }
+        
+         */
         Player player = new Player();
         player.setName(name);
         player.setAge(age);
@@ -36,6 +39,13 @@ public class PlayerService {
         }catch (PlayerRepositoryImpl.EntityNotFoundException e){
             throw e;
         }
+    }
+    public Player getPlayer(String username){
+        return playerRepository.getPlayer(username);
+    }
+    public Player updatePersonalInfo(Player player){
+        return playerRepository.updatePlayer(player);
+
     }
     public class UsernameAlreadyExistsException extends RuntimeException {
         public UsernameAlreadyExistsException(String message) {

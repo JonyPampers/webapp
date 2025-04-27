@@ -28,6 +28,14 @@ public class PlayerRepositoryImpl implements PlayerRepository {
                 player.setExperience(rs.getString("status"));
                 player.setUsername(rs.getString("username"));
                 player.setPasswordHash(rs.getString("password_hash"));
+                player.setRegistrationDate(rs.getDate("created_at"));
+                player.setGender(rs.getString("gender"));
+                try {
+                    setDistrict(player, rs.getInt("district_id"));
+                }catch (EmptyResultDataAccessException e){
+                    throw e;
+                }
+
                 return player;
             }
         });
@@ -46,7 +54,17 @@ public class PlayerRepositoryImpl implements PlayerRepository {
 
     @Override
     public Player updatePlayer(Player player) {
-        return null;
+        String query = "UPDATE players\n" +
+                "SET \n" +
+                "    name = ?,\n" +
+                "    gender = ?,\n" +
+                "    age = ?,\n" +
+                "    status = ?,\n" +
+                "    contact = ?,\n" +
+                "WHERE \n" +
+                "    id = ?;";
+        jdbcTemplate.update(query, player.getName(), player.getGender(), player.getAge(), player.getExperience(), player.getContact(), player.getId());
+        return player;
     }
     @Override
     public Player login(String username){
@@ -68,6 +86,21 @@ public class PlayerRepositoryImpl implements PlayerRepository {
             throw new EntityNotFoundException("Пользователь с логином " + username + " не найден");
         }
 
+    }
+    private Player setDistrict(Player player, int id){
+        String query = "select name from districts where id = "+"'"+id+"';";
+        try{
+            return jdbcTemplate.queryForObject(query, new RowMapper<Player>() {
+                @Override
+                public Player mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    player.setDistrict(rs.getString("name"));
+                    return player;
+                }
+            });
+        }catch (EmptyResultDataAccessException e){
+            player.setDistrict("Не указан");
+            return player;
+        }
     }
     public class EntityNotFoundException extends RuntimeException {
         public EntityNotFoundException(String message) {
