@@ -75,19 +75,22 @@ public class Controller {
     }
     @PostMapping("/updatePersonalInfo")
     public String updatePersonalInfo(@RequestParam String name, @RequestParam int age, @RequestParam String gender, @RequestParam String status, HttpSession session, RedirectAttributes redirectAttributes){
-        System.out.println("Session ID: " + session.getId());
-        System.out.println("Player in session: " + session.getAttribute("player"));
         Player player = (Player) session.getAttribute("player");
-        System.out.println(player.getId());
         player.setName(name);
         player.setAge(age);
         player.setGender(gender);
         player.setExperience(status);
         session.setAttribute("player", playerService.updatePersonalInfo(player));
-        System.out.println(player.getName());
-        System.out.println(player.getId());
         return "redirect:/profile";
 
+    }
+    @PostMapping("/update-contacts")
+    public String updateContacts(@RequestParam String contact, HttpSession session){
+        Player player = (Player) session.getAttribute("player");
+        player.setContact(contact);
+        playerService.updateContacts(player);
+        session.setAttribute("player", player);
+        return "redirect:profile";
     }
     @GetMapping("/myteams")
     public String showMyTeams(Model model, HttpSession session){
@@ -119,10 +122,44 @@ public class Controller {
             throw new IllegalArgumentException("Неверный формат времени. Используйте HH:mm");
         }
         team.setCreator(player.getId());
-        int field = Integer.parseInt(fieldId.replaceAll(" ", ""));
-        System.out.println(field);
-        team.setFieldId(field);
+        String cleanNumber = fieldId
+                .replace("\u00A0", "")  // Неразрывный пробел
+                .replace("\u202F", "")   // Тонкий пробел (в некоторых локалях)
+                .replace(" ", "");       // Обычный пробел
+        team.setFieldId(Integer.parseInt(cleanNumber));
         teamService.createTeam(team);
+        return "redirect:myteams";
+    }
+    @PostMapping("/update-team")
+    public String updateTeam(@RequestParam String name, @RequestParam Date date, @RequestParam String time, @RequestParam int amount, @RequestParam String fieldId, @RequestParam int teamId){
+        Team team = new Team();
+        team.setName(name);
+        team.setGameDate(date);
+        if (time == null || time.isEmpty()) {
+            throw new IllegalArgumentException("Время игры не может быть пустым");
+        }
+
+        // Преобразование с обработкой ошибок
+        try {
+            Time gameTime1 = Time.valueOf(time + ":00"); // Добавляем секунды
+            team.setGameTime(gameTime1);
+        } catch (IllegalArgumentException e) {
+            throw new IllegalArgumentException("Неверный формат времени. Используйте HH:mm");
+        }
+        team.setAmount(amount);
+        String cleanNumber = fieldId
+                .replace("\u00A0", "")  // Неразрывный пробел
+                .replace("\u202F", "")   // Тонкий пробел (в некоторых локалях)
+                .replace(" ", "");       // Обычный пробел
+        team.setFieldId(Integer.parseInt(cleanNumber));
+        team.setId(teamId);
+        teamService.updateTeam(team);
+        return "redirect:myteams";
+
+    }
+    @PostMapping("/delete-team")
+    public String deleteTeam(@RequestParam int teamId){
+        teamService.deleteTeam(teamId);
         return "redirect:myteams";
     }
 

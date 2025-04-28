@@ -8,4 +8,6 @@ public interface TeamRepository {
     public Team getTeam(int id);
     public List<Team> getTeamsForCreator(int id);
     public void createTeam(Team team);
+    public Team updateTeam(Team team);
+    public void deleteTeam(int id);
 }

@@ -112,22 +112,38 @@
     <form id="editTeamForm" action="/update-team" method="post">
         <input type="hidden" name="_csrf" value="${_csrf.token}"/>
         <input type="hidden" id="editTeamId" name="teamId">
+
+        <div class="form-group">
+            <label for="editTeamName">Название команды</label>
+            <input type="text" class="form-control" id="editTeamName" name="name"
+                   placeholder="Введите название команды" required>
+        </div>
+
         <div class="form-group">
             <label for="editDate">Дата игры</label>
-            <input type="date" id="editDate" name="gameDate">
+            <input type="date" class="form-control" id="editDate" name="date" required>
         </div>
+
         <div class="form-group">
             <label for="editTime">Время игры</label>
-            <input type="time" id="editTime" name="gameTime">
+            <input type="time" class="form-control" id="editTime" name="time" required>
         </div>
+
+        <div class="form-group">
+            <label for="editAmount">Количество игроков</label>
+            <input type="number" class="form-control" id="editAmount" name="amount"
+                   min="1" placeholder="Укажите количество" required>
+        </div>
+
         <div class="form-group">
             <label for="editCourt">Спортивная площадка</label>
-            <select id="editCourt" name="fieldId">
+            <select class="form-control" id="editCourt" name="fieldId" required>
                 <#list fields as field>
                 <option value="${field.id}">${field.name}</option>
                 </#list>
             </select>
         </div>
+
         <div class="form-actions">
             <button type="button" class="btn btn-secondary" id="cancelEditBtn">Отмена</button>
             <button type="submit" class="btn btn-primary" id="saveChangesBtn">Сохранить изменения</button>
@@ -137,90 +153,139 @@
 </div>
 
 <script>
-     // Открытие модального окна создания команды
-       document.getElementById('createTeamBtn').addEventListener('click', function() {
-           document.getElementById('createTeamModal').style.display = 'block';
-       });
+    // Открытие модального окна создания команды
+    document.getElementById('createTeamBtn')?.addEventListener('click', function() {
+        document.getElementById('createTeamModal').style.display = 'block';
+    });
 
-       // Закрытие модального окна
-       document.getElementById('closeModalBtn').addEventListener('click', function() {
-           document.getElementById('createTeamModal').style.display = 'none';
-       });
+    // Закрытие модального окна
+    document.getElementById('closeModalBtn')?.addEventListener('click', function() {
+        document.getElementById('createTeamModal').style.display = 'none';
+    });
 
-       document.getElementById('cancelCreateBtn').addEventListener('click', function() {
-           document.getElementById('createTeamModal').style.display = 'none';
-       });
+    document.getElementById('cancelCreateBtn')?.addEventListener('click', function() {
+        document.getElementById('createTeamModal').style.display = 'none';
+    });
 
-      // Храним все команды в глобальной переменной (передается из шаблона)
-      const teamsData = {
-          <#list teams as team>
-          "${team.id}": {
-              id: ${team.id},
-              name: "${team.name?js_string}",
-              gameDate: "${team.gameDate?string('yyyy-MM-dd')}",
-              gameTime: "${team.gameTime?string('HH:mm')}",
-              field: {
-                  id: "${team.fieldId!''}",
+    // Храним все команды в глобальной переменной (передается из шаблона)
+    const teamsData = {
+        <#list teams as team>
+        "${team.id}": {
+            id: ${team.id},
+            name: "${team.name?js_string}",
+            gameDate: "${team.gameDate?string('yyyy-MM-dd')}",
+            gameTime: "${team.gameTime?string('HH:mm')}",
+            field: {
+                id: "${team.fieldId!''}",
+            }
+        }<#if team?has_next>,</#if>
+        </#list>
+    };
 
-              }
-          }<#if team?has_next>,</#if>
-          </#list>
-      };
+    // Показ деталей команды (без AJAX)
+    function showTeamDetails(teamId) {
+        const team = teamsData[teamId];
 
-      // Показ деталей команды (без AJAX)
-      function showTeamDetails(teamId) {
-          const team = teamsData[teamId];
+        if (!team) {
+            console.error('Team not found:', teamId);
+            return;
+        }
 
-          if (!team) {
-              console.error('Team not found:', teamId);
-              return;
+        // Получаем все элементы перед изменением
+        const teamIdElement = document.getElementById('teamId');
+        const editTeamIdInput = document.getElementById('editTeamId');
+        const teamTitleElement = document.getElementById('expandedTeamTitle');
+        const editDateInput = document.getElementById('editDate');
+        const editTimeInput = document.getElementById('editTime');
+        const editCourtInput = document.getElementById('editCourt');
+        const overlayElement = document.getElementById('overlay');
+        const teamDetailsElement = document.getElementById('teamDetails');
+
+        // Проверяем существование всех элементов
+        if (!teamIdElement || !editTeamIdInput || !teamTitleElement ||
+            !editDateInput || !editTimeInput || !editCourtInput ||
+            !overlayElement || !teamDetailsElement) {
+            console.error('One or more required elements not found');
+            return;
+        }
+
+        // Заполняем форму данными
+        teamIdElement.textContent = team.id;
+        editTeamIdInput.value = team.id;
+        teamTitleElement.textContent = team.name;
+        editDateInput.value = team.gameDate;
+        editTimeInput.value = team.gameTime;
+        editCourtInput.value = team.field.id || '';
+
+        // Показываем модальное окно
+        overlayElement.style.display = 'block';
+        teamDetailsElement.style.display = 'block';
+    }
+
+    // Закрытие деталей команды
+    document.getElementById('cancelEditBtn')?.addEventListener('click', function() {
+        const overlay = document.getElementById('overlay');
+        const teamDetails = document.getElementById('teamDetails');
+        if (overlay) overlay.style.display = 'none';
+        if (teamDetails) teamDetails.style.display = 'none';
+    });
+
+    // Удаление команды
+  document.getElementById('deleteTeamBtn')?.addEventListener('click', function() {
+      const teamIdInput = document.getElementById('editTeamId');
+      if (!teamIdInput) return;
+
+      const teamId = teamIdInput.value;
+
+      if (confirm('Вы уверены, что хотите удалить эту команду?')) {
+          // Создаем FormData для отправки как x-www-form-urlencoded
+          const formData = new FormData();
+          formData.append('teamId', teamId);
+
+          // Добавляем CSRF-токен
+          const csrfToken = document.querySelector('input[name="_csrf"]')?.value;
+          if (csrfToken) {
+              formData.append('_csrf', csrfToken);
           }
 
-          // Заполняем форму данными
-          document.getElementById('teamId').textContent = team.id;
-          document.getElementById('editTeamId').value = team.id;
-          document.getElementById('expandedTeamTitle').textContent = team.name;
-          document.getElementById('editDate').value = team.gameDate;
-          document.getElementById('editTime').value = team.gameTime;
-          document.getElementById('editCourt').value = team.field.id || '';
-
-          // Показываем модальное окно
-          document.getElementById('overlay').style.display = 'block';
-          document.getElementById('teamDetails').style.display = 'block';
+          fetch('/delete-team', {
+              method: 'POST',
+              body: new URLSearchParams(formData), // Конвертируем в формат x-www-form-urlencoded
+              headers: {
+                  'Content-Type': 'application/x-www-form-urlencoded'
+              }
+          })
+          .then(response => {
+              if (response.redirected) {
+                  window.location.href = response.url; // Редирект на "myteams"
+              }
+          })
+          .catch(error => {
+              console.error('Error:', error);
+              alert('Произошла ошибка при удалении команды');
+          });
       }
+  });
+    // Закрытие модальных окон при клике на overlay
+    document.getElementById('overlay')?.addEventListener('click', function() {
+        const overlay = document.getElementById('overlay');
+        const teamDetails = document.getElementById('teamDetails');
+        const createTeamModal = document.getElementById('createTeamModal');
 
-       // Закрытие деталей команды
-       document.getElementById('cancelEditBtn').addEventListener('click', function() {
-           document.getElementById('overlay').style.display = 'none';
-           document.getElementById('teamDetails').style.display = 'none';
-       });
+        if (overlay) overlay.style.display = 'none';
+        if (teamDetails) teamDetails.style.display = 'none';
+        if (createTeamModal) createTeamModal.style.display = 'none';
+    });
 
-       // Удаление команды
-       document.getElementById('deleteTeamBtn').addEventListener('click', function() {
-           const teamId = document.getElementById('editTeamId').value;
-           if (confirm('Вы уверены, что хотите удалить эту команду?')) {
-               fetch('/delete-team/' + teamId, {
-                   method: 'DELETE',
-                   headers: {
-                       'X-CSRF-TOKEN': document.querySelector('input[name="_csrf"]').value
-                   }
-               })
-               .then(response => {
-                   if (response.ok) {
-                       alert('Команда удалена!');
-                       location.reload();
-                   }
-               })
-               .catch(error => console.error('Error:', error));
-           }
-       });
-
-       // Закрытие модальных окон при клике на overlay
-       document.getElementById('overlay').addEventListener('click', function() {
-           document.getElementById('overlay').style.display = 'none';
-           document.getElementById('teamDetails').style.display = 'none';
-           document.getElementById('createTeamModal').style.display = 'none';
-       });
+    // Безопасное назначение обработчиков для карточек команд
+    document.querySelectorAll('.team-card').forEach(card => {
+        card.addEventListener('click', function() {
+            const teamId = this.dataset.teamId;
+            if (teamId) {
+                showTeamDetails(teamId);
+            }
+        });
+    });
 </script>
 </body>
 </html>

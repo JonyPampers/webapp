@@ -44,4 +44,16 @@ public class TeamRepositoryImpl implements TeamRepository{
         String query = "insert into team (name, amount, game_date, game_time, created_by, field_id) values (?, ?, ?, ?, ?, ?);";
         jdbcTemplate.update(query, team.getName(), team.getAmount(), team.getGameDate(), team.getGameTime(), team.getCreator(), team.getFieldId());
     }
+    @Override
+    public Team updateTeam(Team team){
+        String query = "update team set name=?, field_id=?, game_date=?, game_time=?, amount=? where id =?;";
+        jdbcTemplate.update(query, team.getName(), team.getFieldId(), team.getGameDate(), team.getGameTime(), team.getAmount(), team.getId());
+        return team;
+    }
+    @Override
+    public void deleteTeam(int id){
+        String query =  "DELETE FROM team \n" +
+                "WHERE id = ?;";
+        jdbcTemplate.update(query, id);
+    }
 }

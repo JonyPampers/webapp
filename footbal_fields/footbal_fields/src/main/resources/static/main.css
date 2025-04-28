@@ -364,3 +364,57 @@ footer {
         padding: 20px;
     }
 }
+/* Стили для кнопки профиля */
+.profile-header {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 20px;
+}
+
+.profile-btn-container {
+    position: relative;
+}
+
+.profile-btn {
+    background: var(--secondary-color);
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    border-radius: 30px;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    transition: all 0.3s;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+}
+
+.profile-btn:hover {
+    background: #2e7d5b;
+    transform: translateY(-2px);
+}
+
+.profile-icon {
+    margin-right: 8px;
+    font-size: 1.1rem;
+}
+
+.profile-name {
+    font-size: 0.95rem;
+    font-weight: 500;
+}
+
+/* Адаптивность для кнопки профиля */
+@media (max-width: 768px) {
+    .profile-name {
+        display: none;
+    }
+
+    .profile-btn {
+        padding: 10px;
+        border-radius: 50%;
+    }
+
+    .profile-icon {
+        margin-right: 0;
+    }
+}

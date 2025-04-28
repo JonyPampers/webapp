@@ -7,7 +7,7 @@ import java.util.Date;
 import java.util.List;
 @Data
 public class Team {
-    private int id;
+    private Integer id;
     private List<Player> players;
     private int fieldId;
     private Date gameDate;

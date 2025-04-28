@@ -17,4 +17,6 @@ public class TeamService {
     public List<Team> getTeamsByCreator(int id){
         return teamRepository.getTeamsForCreator(id);
     }
+    public Team updateTeam(Team team){teamRepository.updateTeam(team); return team;}
+    public void deleteTeam(int id){teamRepository.deleteTeam(id);}
 }

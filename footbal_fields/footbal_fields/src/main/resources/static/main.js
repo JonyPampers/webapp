@@ -91,4 +91,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('viewDetails').addEventListener('click', function() {
         alert('Переход на страницу площадки');
     });
+     document.getElementById('profileButton').addEventListener('click', function() {
+            window.location.href = '/profile'; // Перенаправление на страницу профиля
+        });
 });

@@ -136,9 +136,11 @@
 
                 <!-- Форма редактирования контактной информации -->
                 <form class="edit-form" id="contactForm" action="/update-contacts" method="post">
+                 <input type="hidden" name="_method" value="put"/>
+                                    <input type="hidden" name="_csrf" value="${_csrf.token}"/>
                     <div class="form-row">
-                        <label for="email">Контактная информация</label>
-                        <input type="email" id="email" name="email" value="" readonly>
+                        <label for="contact">Контактная информация</label>
+                        <textarea id="contact" name="contact" rows="3" class="editable-textarea">Ваша контактная информация здесь</textarea>
                     </div>
 
                     <div class="form-actions">

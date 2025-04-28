@@ -18,17 +18,21 @@
         <ul class="profile-nav">
             <li><a href="/" class="active"><i>🏠</i> Главная</a></li>
             <li><a href="/contacts"><i>📞</i> Контакты проекта</a></li>
-            <li><a href="/my-teams"><i>👥</i> Мои команды</a></li>
             <li><a href="/upcoming-games"><i>⚽</i> Ближайшие игры</a></li>
-            <li><a href="/my-courts"><i>📍</i> Мои площадки</a></li>
-            <li><a href="/my-reviews"><i>✍️</i> Мои отзывы</a></li>
             <li><a href="/settings"><i>⚙️</i> Настройки</a></li>
-            <li><a href="/logout"><i>🚪</i> Выйти</a></li>
         </ul>
     </div>
 
     <!-- Основное содержимое -->
     <div class="main-content">
+        <div class="profile-header">
+            <div class="profile-btn-container">
+                <button class="profile-btn" id="profileButton">
+                    <i class="profile-icon">👤</i>
+                    <span class="profile-name">Мой профиль</span>
+                </button>
+            </div>
+        </div>
         <div class="page-header">
             <h1>Спортивные площадки</h1>
             <p>Найдите подходящую площадку для игры в вашем городе</p>
