@@ -33,11 +33,7 @@ public class PlayerRepositoryImpl implements PlayerRepository {
                 player.setPasswordHash(rs.getString("password_hash"));
                 player.setRegistrationDate(rs.getDate("created_at"));
                 player.setGender(rs.getString("gender"));
-                try {
-                    setDistrict(player, rs.getInt("district_id"));
-                }catch (EmptyResultDataAccessException e){
-                    throw e;
-                }
+
 
                 return player;
             }
@@ -113,5 +109,31 @@ public class PlayerRepositoryImpl implements PlayerRepository {
         public EntityNotFoundException(String message) {
             super(message);
         }
+    }
+    @Override
+    public Player getPlayer(int id){
+        String query = "select * from player where id = "+"'"+id+"';";
+        return jdbcTemplate.queryForObject(query, new RowMapper<Player>() {
+            @Override
+            public Player mapRow(ResultSet rs, int rowNum) throws SQLException {
+                Player player = new Player();
+                player.setId(rs.getInt("id"));
+                player.setName(rs.getString("full_name"));
+                player.setAge(rs.getInt("age"));
+                player.setContact(rs.getString("contact_info"));
+                player.setExperience(rs.getString("status"));
+                player.setUsername(rs.getString("username"));
+                player.setPasswordHash(rs.getString("password_hash"));
+                player.setRegistrationDate(rs.getDate("created_at"));
+                player.setGender(rs.getString("gender"));
+                try {
+                    setDistrict(player, rs.getInt("district_id"));
+                }catch (EmptyResultDataAccessException e){
+                    throw e;
+                }
+
+                return player;
+            }
+        });
     }
 }

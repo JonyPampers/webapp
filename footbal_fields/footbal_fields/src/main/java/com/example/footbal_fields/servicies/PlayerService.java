@@ -43,6 +43,9 @@ public class PlayerService {
     public Player getPlayer(String username){
         return playerRepository.getPlayer(username);
     }
+    public Player getPlayer(int id){
+        return playerRepository.getPlayer(id);
+    }
     public Player updatePersonalInfo(Player player){
         return playerRepository.updatePlayer(player);
 

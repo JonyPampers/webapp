@@ -1,12 +1,14 @@
 package com.example.footbal_fields.controllers;
 
+import com.example.footbal_fields.models.Field;
 import com.example.footbal_fields.models.Player;
 import com.example.footbal_fields.models.Team;
 import com.example.footbal_fields.repositories.PlayerRepositoryImpl;
 import com.example.footbal_fields.servicies.FieldService;
 import com.example.footbal_fields.servicies.PlayerService;
 import com.example.footbal_fields.servicies.TeamService;
-import jakarta.servlet.http.HttpServletRequest;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.ui.Model;
@@ -17,6 +19,8 @@ import org.springframework.web.servlet.mvc.support.RedirectAttributes;
 
 import java.sql.Date;
 import java.sql.Time;
+import java.time.LocalDate;
+import java.util.List;
 
 @org.springframework.stereotype.Controller
 public class Controller {
@@ -26,6 +30,12 @@ public class Controller {
     private PlayerService playerService;
     @Autowired
     private TeamService teamService;
+    @GetMapping("/")
+    public String showMain(Model model) {
+        model.addAttribute("fields", fieldService.getFields());
+        model.addAttribute("services", fieldService.getServices());
+        return "main";
+    }
     @GetMapping("/registerPage")
     public String showRegistration(Model model){
         return "register";
@@ -94,13 +104,17 @@ public class Controller {
     }
     @GetMapping("/myteams")
     public String showMyTeams(Model model, HttpSession session){
+        if (session.getAttribute("player")==null){
+            return "redirect:loginPage";
+        }
         Player player = (Player) session.getAttribute("player");
         model.addAttribute("teams", teamService.getTeamsByCreator(player.getId()));
         model.addAttribute("fields", fieldService.getFields());
         return "myteams";
     }
     @GetMapping("/logoutPage")
-    public String logout(){
+    public String logout(HttpSession session){
+        session.removeAttribute("player");
         return "main";
     }
     @PostMapping("/create-team")
@@ -128,6 +142,7 @@ public class Controller {
                 .replace(" ", "");       // Обычный пробел
         team.setFieldId(Integer.parseInt(cleanNumber));
         teamService.createTeam(team);
+
         return "redirect:myteams";
     }
     @PostMapping("/update-team")
@@ -162,6 +177,33 @@ public class Controller {
         teamService.deleteTeam(teamId);
         return "redirect:myteams";
     }
+    @GetMapping("/teams")
+    public String teams(Model model) throws JsonProcessingException {
+        model.addAttribute("games", teamService.getTeams());
+        model.addAttribute("fields", fieldService.getFields());
+        List<Team> games = teamService.getTeamsByDate(Date.valueOf(LocalDate.now()));
+        ObjectMapper mapper = new ObjectMapper();
+        String gamesJson = mapper.writeValueAsString(games);
+        model.addAttribute("gamesJson", gamesJson);
+        return "teams";
+    }
+    @PostMapping("join-team")
+    public String joinTeam(@RequestParam("gameId") int gameId, HttpSession session, RedirectAttributes redirectAttributes) {
+        if (session.getAttribute("player") == null) {
+            return "redirect:loginPage";
+        }
+        Player player = (Player) session.getAttribute("player");
+        teamService.joinTeam(player.getId(), gameId);
+        return "redirect:teams";
+    }
+    @PostMapping("/getCreator")
+    public Player getCreator(@RequestParam int creator){
+        return playerService.getPlayer(creator);
 
+    }
+    @PostMapping("/get-field")
+    public Field getField(@RequestParam int id){
+        return fieldService.getField(id);
+    }
 
 }

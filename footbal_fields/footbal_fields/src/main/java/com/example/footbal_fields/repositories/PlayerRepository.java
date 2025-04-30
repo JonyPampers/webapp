@@ -7,4 +7,5 @@ public interface PlayerRepository {
     public void deletePlayer(Player player);
     public Player updatePlayer(Player player);
     public Player login(String username);
+    public Player getPlayer(int id);
 }

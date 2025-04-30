@@ -1,0 +1,257 @@
+
+        :root {
+            --primary-color: #1a3a1f;
+            --secondary-color: #3d9970;
+            --accent-color: #ff851b;
+            --light-color: #f5f5f5;
+            --text-color: #333;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: white;
+            display: flex;
+            color: var(--text-color);
+        }
+
+        /* Навигационная панель */
+        .profile-sidebar {
+            width: 250px;
+            background-color: var(--primary-color);
+            color: white;
+            height: 100vh;
+            padding: 20px 0;
+            position: fixed;
+        }
+
+        .logo-sidebar {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .logo-sidebar img {
+            width: 80%;
+            filter: brightness(0) invert(1);
+        }
+
+        .profile-nav {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .profile-nav li a {
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            display: block;
+            transition: 0.3s;
+        }
+
+        .profile-nav li a:hover {
+            background-color: #0e2a12;
+        }
+
+        .profile-nav li a i {
+            margin-right: 10px;
+        }
+
+        /* Основное содержимое */
+        .profile-content {
+            margin-left: 250px;
+            padding: 30px;
+            width: calc(100% - 250px);
+        }
+
+        /* Фильтры */
+        .filters-container {
+            display: flex;
+            gap: 20px;
+            margin-bottom: 30px;
+            align-items: flex-end;
+        }
+
+        .filter-group {
+            flex: 1;
+        }
+
+        .filter-group label {
+            display: block;
+            margin-bottom: 8px;
+            font-weight: 500;
+        }
+
+        .filter-group select, .filter-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-family: 'Montserrat', sans-serif;
+        }
+
+        /* Карточки игр */
+        .games-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 20px;
+        }
+
+        .game-card {
+            background: #f8f9fa;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+            cursor: pointer;
+        }
+
+        .game-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.1);
+        }
+
+        .game-card h3 {
+            margin-top: 0;
+            color: var(--primary-color);
+            border-bottom: 1px solid #eee;
+            padding-bottom: 10px;
+        }
+
+        .game-card p {
+            margin: 8px 0;
+            color: #555;
+        }
+
+        .game-card .players {
+            color: var(--secondary-color);
+            font-weight: 500;
+        }
+
+        /* Модальное окно */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 100;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.5);
+            overflow: auto;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 30px;
+            border-radius: 10px;
+            width: 50%;
+            max-width: 600px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.2);
+        }
+
+        .close-btn {
+            float: right;
+            font-size: 24px;
+            cursor: pointer;
+        }
+
+        .modal-body {
+            margin-top: 20px;
+        }
+
+        .participants-list {
+            margin: 20px 0;
+        }
+
+        .participant {
+            padding: 8px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .participant.creator {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .join-btn {
+            background-color: var(--secondary-color);
+            color: white;
+            border: none;
+            padding: 12px 25px;
+            border-radius: 5px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: background-color 0.3s;
+            margin-top: 20px;
+            width: 100%;
+        }
+
+        .join-btn:hover {
+            background-color: #2e7d5b;
+        }
+
+        /* Календарь */
+        .calendar-container {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            margin-left: 20px;
+            width: 300px;
+            position: sticky;
+            top: 30px;
+        }
+
+        .calendar-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 15px;
+        }
+
+        .calendar-title {
+            font-weight: 600;
+            color: var(--primary-color);
+        }
+
+        .calendar-grid {
+            display: grid;
+            grid-template-columns: repeat(7, 1fr);
+            gap: 5px;
+        }
+
+        .calendar-day {
+            text-align: center;
+            padding: 8px;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        .calendar-day:hover {
+            background-color: #f0f0f0;
+        }
+
+        .calendar-day.active {
+            background-color: var(--secondary-color);
+            color: white;
+        }
+
+        .calendar-day.other-month {
+            color: #aaa;
+        }
+
+        /* Адаптивность */
+        @media (max-width: 992px) {
+            .filters-container {
+                flex-direction: column;
+            }
+
+            .calendar-container {
+                width: 100%;
+                margin-left: 0;
+                margin-top: 30px;
+            }
+        }

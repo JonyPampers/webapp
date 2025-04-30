@@ -13,4 +13,7 @@ public class FieldService {
     public List<Field> getFields(){
         return fieldRepository.getFields();
     }
+    public Field getField(int id){return fieldRepository.getField(id);}
+
+    public List<com.example.footbal_fields.models.Service> getServices(){return fieldRepository.getServices();}
 }

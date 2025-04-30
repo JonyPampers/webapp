@@ -16,12 +16,11 @@
     <ul class="profile-nav">
         <li><a href="/"><i>🏠</i> Главная</a></li>
         <li><a href="/contacts"><i>📞</i> Контакты проекта</a></li>
-        <li><a href="/my-teams" class="active"><i>👥</i> Мои команды</a></li>
-        <li><a href="/upcoming-games"><i>⚽</i> Ближайшие игры</a></li>
+        <li><a href="/myteams" class="active"><i>👥</i> Мои команды</a></li>
+        <li><a href="/teams"><i>⚽</i> Ближайшие игры</a></li>
         <li><a href="/my-courts"><i>📍</i> Мои площадки</a></li>
         <li><a href="/my-reviews"><i>✍️</i> Мои отзывы</a></li>
-        <li><a href="/settings"><i>⚙️</i> Настройки</a></li>
-        <li><a href="/logout"><i>🚪</i> Выйти</a></li>
+        <li><a href="/logoutPage"><i>🚪</i> Выйти</a></li>
     </ul>
 </div>
 
