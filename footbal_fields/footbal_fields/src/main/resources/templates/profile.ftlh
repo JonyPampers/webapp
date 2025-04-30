@@ -11,10 +11,7 @@
 <body>
     <div class="profile-container">
         <!-- Боковая панель навигации -->
-        <div class="profile-sidebar">
-            <div class="logo-sidebar">
-                <img src="/images/logo.png" alt="Логотип">
-            </div>
+
             <ul class="profile-nav">
                 <li><a href="/" class="active"><i>🏠</i> Главная</a></li>
                 <li><a href="/contacts"><i>📞</i> Контакты проекта</a></li>
@@ -30,15 +27,7 @@
         <div class="profile-content">
             <!-- Заголовок профиля с аватаркой -->
             <div class="profile-header">
-                <div class="profile-avatar">
-                    <img src="${player.avatarUrl!'/images/default-avatar.png'}" alt="Аватар ${player.name}" class="avatar-img">
-                    <form action="/upload-avatar" method="post" enctype="multipart/form-data">
-                        <label class="avatar-upload">
-                            <input type="file" name="avatar" accept="image/*">
-                            <i>✏️</i>
-                        </label>
-                    </form>
-                </div>
+
                 <div class="profile-info">
                     <h2>${player.name}</h2>
                     <p>Участник с ${player.registrationDate?string('dd MMMM yyyy')} · ${player.age} года</p>

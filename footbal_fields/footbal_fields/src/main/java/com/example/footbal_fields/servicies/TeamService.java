@@ -35,4 +35,5 @@ public class TeamService {
         }
     }
     public List<Team> getTeams(){return teamRepository.getTeams();}
+    public List<Team> apoints(int id){return teamRepository.getTeamsByAppointment(id);}
 }

@@ -1,5 +1,4 @@
 package com.example.footbal_fields.controllers;
-
 import com.example.footbal_fields.models.Field;
 import com.example.footbal_fields.models.Player;
 import com.example.footbal_fields.models.Team;
@@ -16,7 +15,6 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.servlet.mvc.support.RedirectAttributes;
-
 import java.sql.Date;
 import java.sql.Time;
 import java.time.LocalDate;
@@ -54,7 +52,6 @@ public class Controller {
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:registerPage";
         }
-
     }
     @GetMapping("/loginPage")
     public String showLogin(){
@@ -70,7 +67,6 @@ public class Controller {
                 redirectAttributes.addFlashAttribute("error", "Неверный пароль");
                 return "redirect:loginPage";
             }
-
         }catch (PlayerRepositoryImpl.EntityNotFoundException e){
             redirectAttributes.addFlashAttribute("error", e.getMessage());
             return "redirect:loginPage";
@@ -92,7 +88,6 @@ public class Controller {
         player.setExperience(status);
         session.setAttribute("player", playerService.updatePersonalInfo(player));
         return "redirect:/profile";
-
     }
     @PostMapping("/update-contacts")
     public String updateContacts(@RequestParam String contact, HttpSession session){
@@ -110,6 +105,7 @@ public class Controller {
         Player player = (Player) session.getAttribute("player");
         model.addAttribute("teams", teamService.getTeamsByCreator(player.getId()));
         model.addAttribute("fields", fieldService.getFields());
+        model.addAttribute("appointments", teamService.apoints(((Player) session.getAttribute("player")).getId()));
         return "myteams";
     }
     @GetMapping("/logoutPage")
@@ -199,7 +195,6 @@ public class Controller {
     @PostMapping("/getCreator")
     public Player getCreator(@RequestParam int creator){
         return playerService.getPlayer(creator);
-
     }
     @PostMapping("/get-field")
     public Field getField(@RequestParam int id){

@@ -10,9 +10,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <div class="logo">
-            <img src="https://i.pinimg.com/736x/53/74/cc/5374cc05417af08e12218c69aaf3374d.jpg" alt="FootballFields Logo">
-        </div>
+
         <h1>Создайте аккаунт</h1>
         <p>Присоединяйтесь к нашему футбольному сообществу</p>
     </div>

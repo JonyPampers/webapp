@@ -3,6 +3,8 @@ package com.example.footbal_fields.repositories;
 import com.example.footbal_fields.models.Player;
 import com.example.footbal_fields.models.Team;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataAccessException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
@@ -12,6 +14,7 @@ import java.sql.Date;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 @Repository
@@ -105,26 +108,115 @@ public class TeamRepositoryImpl implements TeamRepository{
         }
     }
     @Override
-    public List<Team> getTeams(){
-        String query = "select * from team";
-        return jdbcTemplate.query(query, new RowMapper<Team>() {
-            @Override
-            public Team mapRow(ResultSet rs, int rowNum) throws SQLException {
-                Team team = new Team();
-                team.setId(rs.getInt("id"));
-                team.setName(rs.getString("name"));
-                team.setAmount(rs.getInt("amount"));
-                team.setGameTime(rs.getTime("game_time"));
-                team.setGameDate(rs.getTime("game_date"));
-                team.setCreator(rs.getInt("created_by"));
-                List<Player> players = getPlayersByTeam(rs.getInt("id"));
-                Player player = new Player();
-                player.setId(rs.getInt("created_by"));
-                players.add(player);
-                team.setPlayers(players);
-                return team;
-            }
-        });
+    public List<Team> getTeams() {
+        String query = "SELECT * FROM team";
+        try {
+            return jdbcTemplate.query(query, new RowMapper<Team>() {
+                @Override
+                public Team mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    try {
+                        Team team = new Team();
+                        team.setId(rs.getInt("id"));
+                        team.setName(rs.getString("name"));
+                        team.setAmount(rs.getInt("amount"));
+                        team.setGameTime(rs.getTime("game_time"));
+                        team.setGameDate(rs.getDate("game_date")); // Исправил на getDate вместо getTime
+                        team.setCreator(rs.getInt("created_by"));
+
+                        // Обработка игроков с обработкой возможных исключений
+                        try {
+                            List<Player> players = getPlayersByTeam(rs.getInt("id"));
+                            Player player = getPlayer(rs.getInt("created_by")); // Исправил на created_by вместо id команды
+
+                            if (player != null) {
+                                team.setCreatorName(player.getName());
+                                team.setCreatorContact(player.getContact());
+                                players.add(player);
+                            }
+                            team.setPlayers(players);
+                        } catch (DataAccessException e) {
+                            // Логируем ошибку, но продолжаем работу с пустым списком игроков
+                            team.setPlayers(Collections.emptyList());
+
+                        }
+
+                        return team;
+                    } catch (SQLException e) {
+                        throw new RuntimeException("Ошибка при маппинге данных команды", e);
+                    }
+                }
+            });
+        } catch (DataAccessException e) {
+            // Логируем ошибку и возвращаем пустой список
+
+            return Collections.emptyList();
+        }
+    }
+    @Override
+    public List<Team> getTeamsByAppointment(int id) {
+        String sql = "SELECT * FROM team WHERE id IN (SELECT team_id FROM teammembers WHERE player_id = ?)";
+        try {
+            return jdbcTemplate.query(sql, new RowMapper<Team>() {
+                @Override
+                public Team mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    try {
+                        Team team = new Team();
+                        team.setId(rs.getInt("id"));
+                        team.setName(rs.getString("name"));
+                        team.setAmount(rs.getInt("amount"));
+                        team.setGameTime(rs.getTime("game_time"));
+                        team.setGameDate(rs.getDate("game_date")); // Исправлено на getDate
+                        team.setCreator(rs.getInt("created_by"));
+
+                        // Обработка игроков с обработкой возможных исключений
+                        try {
+                            List<Player> players = getPlayersByTeam(rs.getInt("id"));
+                            Player creator = getPlayer(rs.getInt("created_by")); // Получаем создателя по created_by
+
+                            if (creator != null) {
+                                team.setCreatorName(creator.getName());
+                                team.setCreatorContact(creator.getContact());
+                                players.add(creator); // Добавляем создателя в список игроков
+                            }
+                            team.setPlayers(players);
+                        } catch (DataAccessException e) {
+                            // Логируем ошибку, но продолжаем работу с пустым списком игроков
+                            team.setPlayers(Collections.emptyList());
+
+                        }
+
+                        return team;
+                    } catch (SQLException e) {
+                        throw new RuntimeException("Ошибка при маппинге данных команды", e);
+                    }
+                }
+            }, id);
+        } catch (DataAccessException e) {
+            // Логируем ошибку и возвращаем пустой список
+
+            return Collections.emptyList();
+        }
+    }
+    private Player getPlayer(int id){
+        String sql = "SELECT * FROM player WHERE id = ?";
+        try {
+            return jdbcTemplate.queryForObject(sql, new RowMapper<Player>() {
+                @Override
+                public Player mapRow(ResultSet rs, int rowNum) throws SQLException {
+                    Player player = new Player();
+                    player.setId(rs.getInt("id"));
+                    player.setContact(rs.getString("contact_info"));
+                    player.setName(rs.getString("full_name"));
+                    return player;
+                }
+            }, id);
+        } catch (EmptyResultDataAccessException e) {
+            // Обработка случая, когда игрок не найден
+            return null; // или можно вернуть new Player() с дефолтными значениями
+        } catch (DataAccessException e) {
+            // Обработка других ошибок доступа к данным
+            throw new RuntimeException("Ошибка при получении данных игрока: " + e.getMessage(), e);
+        }
     }
     public class AlreadyJoinedException extends RuntimeException {
         public AlreadyJoinedException(String message) {

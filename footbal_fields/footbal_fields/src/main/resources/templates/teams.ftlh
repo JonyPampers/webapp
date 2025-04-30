@@ -13,9 +13,7 @@
 <body>
 <!-- Боковая панель навигации -->
 <div class="profile-sidebar">
-    <div class="logo-sidebar">
-        <img src="/images/logo.png" alt="Логотип">
-    </div>
+  
     <ul class="profile-nav">
         <li><a href="/"><i>🏠</i> Главная</a></li>
         <li><a href="/contacts"><i>📞</i> Контакты проекта</a></li>
@@ -241,22 +239,31 @@
     // Загружаем данные создателя
     if (game.creatorId) {
         const creator = await loadCreatorData(game.creatorId, document.body);
-        document.getElementById('modalCreatorName').textContent = creator?.name || 'Не указан';
-        document.getElementById('modalCreatorContact').textContent = creator?.contact || 'Не указан';
+        document.getElementById('modalCreatorName').textContent = game.creatorName || 'Не указан';
+        document.getElementById('modalCreatorContact').textContent = game.creatorContact || 'Не указан';
     } else {
-        document.getElementById('modalCreatorName').textContent = game.creator || '';
+        document.getElementById('modalCreatorName').textContent = game.creatorName || '';
         document.getElementById('modalCreatorContact').textContent = game.creatorContact || '';
     }
 
-    // Загружаем данные площадки
-    if (game.fieldId) {
-        const field = await loadFieldData(game.fieldId, document.body);
-        document.getElementById('modalFieldName').textContent = field?.name || 'Не указана';
-        document.getElementById('modalFieldAddress').textContent = field?.address || 'Не указан';
-    } else {
-        document.getElementById('modalFieldName').textContent = game.fieldId || '';
-        document.getElementById('modalFieldAddress').textContent = game.fieldAddress || '';
-    }
+   // Загружаем данные площадки
+   if (game.fieldId) {
+       // Ищем площадку в списке fields по ID
+       const field = fields.find(f => f.id == game.fieldId);
+
+       if (field) {
+           document.getElementById('modalFieldName').textContent = field.name || 'Не указана';
+           document.getElementById('modalFieldAddress').textContent = field.address || 'Не указан';
+       } else {
+           // Если площадка не найдена в списке, используем данные из game
+           document.getElementById('modalFieldName').textContent = game.fieldName || 'Не указана';
+           document.getElementById('modalFieldAddress').textContent = game.fieldAddress || 'Не указан';
+       }
+   } else {
+       // Если нет fieldId, показываем данные напрямую из game
+       document.getElementById('modalFieldName').textContent = game.fieldName || 'Не указана';
+       document.getElementById('modalFieldAddress').textContent = game.fieldAddress || 'Не указан';
+   }
 
     // Форматируем дату и время
     const formattedDate = game.gameDate ? new Date(game.gameDate).toLocaleDateString('ru-RU', {

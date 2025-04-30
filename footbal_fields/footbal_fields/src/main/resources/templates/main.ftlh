@@ -16,9 +16,7 @@
 <div class="app-container">
     <!-- Навигационная панель -->
     <div class="profile-sidebar">
-        <div class="logo-sidebar">
-            <img src="/images/logo.png" alt="Логотип">
-        </div>
+
         <ul class="profile-nav">
             <li><a href="/" class="active"><i>🏠</i> Главная</a></li>
             <li><a href="/contacts"><i>📞</i> Контакты проекта</a></li>

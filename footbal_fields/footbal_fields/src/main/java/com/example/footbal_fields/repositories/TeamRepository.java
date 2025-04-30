@@ -17,6 +17,7 @@ public interface TeamRepository {
     public List<Player> getPlayersByTeam(int id);
     public void joinTeam(int playerId, int id) throws AlreadyBoundException;
     public List<Team> getTeams();
+    public List<Team> getTeamsByAppointment(int id);
 
 
 }

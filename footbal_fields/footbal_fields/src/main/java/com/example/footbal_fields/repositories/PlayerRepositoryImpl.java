@@ -34,7 +34,6 @@ public class PlayerRepositoryImpl implements PlayerRepository {
                 player.setRegistrationDate(rs.getDate("created_at"));
                 player.setGender(rs.getString("gender"));
 
-
                 return player;
             }
         });

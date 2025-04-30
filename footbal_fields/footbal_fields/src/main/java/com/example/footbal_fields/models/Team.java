@@ -15,6 +15,25 @@ public class Team {
     private int amount;
     private int creator;
     private String name;
+    private String creatorName;
+    private String creatorContact;
+
+    public String getCreatorContact() {
+        return creatorContact;
+    }
+
+    public void setCreatorName(String creatorName) {
+        this.creatorName = creatorName;
+    }
+
+    public String getCreatorName() {
+        return creatorName;
+    }
+
+    public void setCreatorContact(String creatorContact) {
+        this.creatorContact = creatorContact;
+    }
+
     public void setName(String name){this.name=name;}
     public String getName(){return name;}
     public void setCreator(int id){creator=id;}

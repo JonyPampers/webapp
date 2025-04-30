@@ -10,9 +10,7 @@
 <body>
 <div class="container">
     <div class="header">
-        <div class="logo">
-            <img src="/images/logo.png" alt="FootballFields Logo">
-        </div>
+
         <h1>Добро пожаловать!</h1>
         <p>Войдите в свой аккаунт</p>
     </div>
